@@ -65,6 +65,8 @@ module.exports = {
     },
     vas: {
       start: true,
+      handler: true,
+      manifest: true,
       http: {
         createStack: true,
         createError: true,
@@ -96,7 +98,11 @@ module.exports = {
           server,
           wrapError,
           valueHandler
-        }
+        },
+        // set empty values in the case where
+        // vas-http is the only vas module
+        handler: () => {},
+        manifest: () => ({})
       }
     }
 
@@ -104,7 +110,7 @@ module.exports = {
       return 5000
     }
 
-    function handler (req, res) {
+    function handler () {
       return HttpHandler({
         handler: api.vas.handler,
         manifest: deepAssign(...api.vas.manifest())
