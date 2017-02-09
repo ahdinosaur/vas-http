@@ -1,61 +1,53 @@
 const combine = require('depject')
 const values = require('object-values')
 const pull = require('pull-stream')
-const Log = require('catstack-log')
+const { createServer: Server } = require('http')
+const Send = require('http-sender')()
 const vas = require('vas')
-
-const http = require('./')
+const vasHttp = require('./')
 
 const data = {
-  gives: 'data',
-  create: () => () => ({
-    1: 'human',
-    2: 'computer',
-    3: 'JavaScript'
-  })
+  1: 'human',
+  2: 'computer',
+  3: 'JavaScript'
 }
 
-const things = vas.Service({
-  name: 'things',
-  needs: {
-    data: 'first'
-  },
+const things = {
+  path: ['things'],
   manifest: {
-    all: {
-      type: 'source',
-      http: {
+    all: 'source',
+    get: 'async'
+  },
+  methods: {
+    all: function () {
+      const things = values(data)
+      return pull.values(things)
+    },
+    get: function ({ id }, cb) {
+      cb(null, data[id])
+    }
+  },
+  adapter: {
+    http: {
+      all: {
         route: '/things',
         statusCode: 418,
         responseHeaders: {
           'cat': 'meow'
         }
-      }
-    },
-    get: {
-      type: 'async',
-      http: {
+      },
+      get: {
         route: '/things/:id'
       }
     }
-  },
-  create: function (api) {
-    const data = api.data()
-
-    return {
-      methods: { all, get }
-    }
-
-    function all () {
-      const things = values(data)
-      return pull.values(things)
-    }
-
-    function get ({ id }, cb) {
-      cb(null, data[id])
-    }
   }
-})
+}
 
-const combinedModules = combine({ data, things, http, Log })
+const definitions = [things]
+const services = definitions.map(vas.Service)
+const service = vas.combine(services)
+const httpHandler = vas.Server(vasHttp.Server, service)
 
-combinedModules.vas.start.map(start => start())
+Server((req, res) => {
+  httpHandler(req, res, {}, Send(req, res))
+}).listen(5000)
