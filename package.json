@@ -56,6 +56,7 @@
     "libnested": "^1.1.0",
     "mime-types": "^2.1.14",
     "object-assign": "^4.1.1",
+    "pull-http-client": "0.0.1",
     "pull-identify-filetype": "^1.1.0",
     "pull-json-doubleline": "^2.0.0",
     "pull-stream": "^3.5.0",

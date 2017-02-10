@@ -5,6 +5,9 @@ const { createServer: Server } = require('http')
 const Send = require('http-sender')()
 const vas = require('vas')
 const vasHttp = require('./')
+const HttpClient = vasHttp.Client({
+  baseUrl: 'http://localhost:5000/'
+})
 
 const data = {
   1: 'human',
@@ -51,3 +54,23 @@ const httpHandler = vas.Server(vasHttp.Server, service)
 Server((req, res) => {
   httpHandler(req, res, {}, Send(req, res))
 }).listen(5000)
+
+const clients = definitions.map(def => {
+  return vas.Client(HttpClient, def)
+})
+const client = vas.combine(clients)
+const api = vas.Emitter(client)
+
+api.things.get({ id: 1 }, (err, value) => {
+  if (err) throw err
+  console.log('get', value)
+  // get human
+})
+
+pull(
+  api.things.all(),
+  pull.drain(v => console.log('all', v))
+)
+// all human
+// all computer
+// all JavaScript
