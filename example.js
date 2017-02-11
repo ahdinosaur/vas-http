@@ -1,4 +1,3 @@
-const combine = require('depject')
 const values = require('object-values')
 const pull = require('pull-stream')
 const { createServer: Server } = require('http')

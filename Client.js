@@ -8,11 +8,7 @@ const pullJson = require('pull-json-doubleline')
 const pullHttpClient = require('pull-http-client')
 const pull = require('pull-stream')
 const pathToRegExp = require('path-to-regexp')
-
-// TODO
-// these need to be public `vas` api's
-// lib is for internal use only!
-const is = require('vas/lib/is')
+const defined = require('defined')
 
 module.exports = function setupClient (context = {}) {
   const {
@@ -25,7 +21,6 @@ module.exports = function setupClient (context = {}) {
   return Client
 
   function Client ({ manifest, adapter }) {
-
     return handler
 
     function handler ({ type, path, options = {} }) {
@@ -113,7 +108,6 @@ function routeToPath (route) {
   const tokens = pathToRegExp.parse(route)
   const toPath = pathToRegExp.compile(route)
   return function (options) {
-    console.log(tokens, options)
     const path = toPath(options)
     tokens.forEach(token => delete options[token.name])
     return path
