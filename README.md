@@ -3,7 +3,7 @@
 http server and client for [vas@3.0.0](https://github.com/ahdinosaur/vas/tree/v3)
 
 ```shell
-npm install --save ahdinosaur/vas-http
+npm install --save vas-http@pre-release
 ```
 
 ## example
