@@ -1,6 +1,6 @@
 {
   "name": "vas-http",
-  "version": "0.0.0",
+  "version": "1.0.0-pre.0",
   "description": "http server and client for vas",
   "main": "index.js",
   "browser": "browser.js",
