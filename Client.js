@@ -51,18 +51,23 @@ module.exports = function setupClient (context = {}) {
           base.pathname || '/',
           urlPath
         ),
-        query: QueryString.stringify(query)
+        search: Object.keys(query).length > 0
+          ? '?' + QueryString.stringify(query)
+          : null
       })
 
       var requestOpts = assign({
         url,
         method,
-        headers: requestHeaders
+        headers: requestHeaders || {}
       })
 
       switch (type) {
         case 'async':
         case 'sync':
+          if (responseType === 'json') {
+            requestOpts.headers['accept'] || requestOpts.headers['Accept'] || (requestOpts.headers['Accept'] = 'application/json') // Don't override existing accept header declared by user
+          }
           return (cb) => pullHttpClient.async(requestOpts, function (err, data) {
             if (err) return cb(err)
             if (responseType === 'json') {
