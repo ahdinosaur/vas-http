@@ -20,7 +20,7 @@ HttpServer.key = 'http'
 function HttpServer ({ handler, manifest, adapter }) {
   var routes = []
   each(manifest, (type, path) => {
-    const httpOptions = get(adapter, path)
+    const httpOptions = get(adapter, path) || {}
     const {
       route: routePath = '/' + path.join('/'),
       responseType = 'json',
