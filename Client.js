@@ -80,6 +80,9 @@ module.exports = function setupClient (context = {}) {
             handleData(data, cb)
           })
         case 'source':
+          if (responseType === 'json') {
+            requestOpts.headers['accept'] || requestOpts.headers['Accept'] || (requestOpts.headers['Accept'] = 'application/json; boundary=NLNL') // Don't override existing accept header declared by user
+          }
           return pull(
             pullHttpClient.source(requestOpts),
             requestType === 'json'
